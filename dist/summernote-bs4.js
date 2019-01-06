@@ -7051,7 +7051,7 @@
               $video = $$1('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-                  .attr('width', '640').attr('height', '360');
+                  .attr('width', '100%').attr('height', '360');
           }
           else if (igMatch && igMatch[0].length) {
               $video = $$1('<iframe>')
@@ -7072,7 +7072,7 @@
               $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-                  .attr('width', '640').attr('height', '360');
+                  .attr('width', '100%').attr('height', '360');
           }
           else if (dmMatch && dmMatch[2].length) {
               $video = $$1('<iframe>')
