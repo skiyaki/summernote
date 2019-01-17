@@ -40,7 +40,7 @@
         videoLink: '動画リンク',
         insert: '動画挿入',
         url: '動画のURL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
+        providers: '(YouTube, Vimeo, Instagram)'
       },
       link: {
         link: 'リンク',
