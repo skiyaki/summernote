@@ -24,6 +24,7 @@
     "lint": "eslint src/js plugin lang test Gruntfile.js",
     "download:selenium": "if [ ! -e test/libs/selenium-server-standalone.jar ]; then wget http://selenium-release.storage.googleapis.com/3.6/selenium-server-standalone-3.6.0.jar -O test/libs/selenium-server-standalone.jar; fi",
     "test": "karma start karma.conf.js --single-run",
+    "test:watch": "karma start karma.conf.js",
     "test:travis": "grunt test-travis --verbose",
     "test:saucelabs": "grunt saucelabs-test"
   },
@@ -71,20 +72,19 @@
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.3.0",
     "karma-opera-launcher": "^1.0.0",
-    "karma-phantomjs-launcher": "^1.0.4",
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "1.2.0",
     "karma-typescript": "^3.0.13",
     "karma-typescript-es6-transform": "^1.0.4",
     "load-grunt-tasks": "^4.0.0",
     "mocha": "^5.2.0",
-    "phantomjs-prebuilt": "^2.1.16",
     "popper.js": "^1.14.6",
     "rollup": "^0.68.1",
     "rollup-plugin-eslint": "^5.0.0",
     "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-typescript": "^1.0.0",
     "serve-static": "^1.13.2",
-    "typescript": "^3.2.2"
-  }
+    "typescript": "3.2.2"
+  },
+  "dependencies": {}
 }
