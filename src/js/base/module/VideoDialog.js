@@ -112,6 +112,7 @@ export default class VideoDialog {
       if ($node) {
         // insert video node
         this.context.invoke('editor.insertNode', $node);
+        this.context.invoke('editor.insertNode', $('<p><br></p>')[0]);
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');

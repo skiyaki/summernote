@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-07-17T09:32Z
+ * Date: 2019-07-18T01:27Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -7078,6 +7078,7 @@
               if ($node) {
                   // insert video node
                   _this.context.invoke('editor.insertNode', $node);
+                  _this.context.invoke('editor.insertNode', $$1('<p><br></p>')[0]);
               }
           }).fail(function () {
               _this.context.invoke('editor.restoreRange');
