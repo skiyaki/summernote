@@ -75,19 +75,19 @@ export default class VideoDialog {
         .attr('frameborder', 0)
         .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
         .attr('src', 'https://www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-        .attr('width', '100%').attr('height', '360');
+        .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe allowfullscreen>')
         .attr('frameborder', 0)
         .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
         .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
-        .attr('width', '100%').attr('height', '360');
+        .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
     } else if (vimMatch && vimMatch[3].length) {
       $video = $('<iframe allowfullscreen>')
         .attr('frameborder', 0)
         .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
         .attr('src', 'https://player.vimeo.com/video/' + vimMatch[3])
-        .attr('width', '100%').attr('height', '360');
+        .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
@@ -111,9 +111,7 @@ export default class VideoDialog {
 
       if ($node) {
         // insert video node
-        console.log('faaaaaaaaaaaaaaaaaa');
         this.context.invoke('editor.insertNode', $node);
-        this.context.invoke('editor.insertNode', '');
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');

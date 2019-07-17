@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-07-17T05:46Z
+ * Date: 2019-07-17T07:52Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -7043,21 +7043,21 @@
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-                  .attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
           }
           else if (igMatch && igMatch[0].length) {
               $video = $$1('<iframe allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
-                  .attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
           }
           else if (vimMatch && vimMatch[3].length) {
               $video = $$1('<iframe allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://player.vimeo.com/video/' + vimMatch[3])
-                  .attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
           }
           else {
               // this is not a known video link. Now what, Cat? Now what?
@@ -7078,9 +7078,7 @@
               var $node = _this.createVideoNode(url);
               if ($node) {
                   // insert video node
-                  console.log('faaaaaaaaaaaaaaaaaa');
                   _this.context.invoke('editor.insertNode', $node);
-                  _this.context.invoke('editor.insertNode', '');
               }
           }).fail(function () {
               _this.context.invoke('editor.restoreRange');
