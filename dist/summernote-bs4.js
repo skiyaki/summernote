@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-07-17T07:52Z
+ * Date: 2019-07-17T09:32Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -7043,21 +7043,21 @@
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
           else if (igMatch && igMatch[0].length) {
               $video = $$1('<iframe allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
-                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
           else if (vimMatch && vimMatch[3].length) {
               $video = $$1('<iframe allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://player.vimeo.com/video/' + vimMatch[3])
-                  .attr('style', 'padding:0 10px').attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
           else {
               // this is not a known video link. Now what, Cat? Now what?
