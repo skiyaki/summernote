@@ -46,7 +46,7 @@ $.extend($.summernote.lang, {
       videoLink: 'Video Link',
       insert: 'Insert Video',
       url: 'Video URL',
-      providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)',
+      providers: '(YouTube, Vimeo, Instagram)',
     },
     link: {
       link: 'Link',

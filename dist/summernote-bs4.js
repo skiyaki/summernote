@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-22T04:42Z
+ * Date: 2019-07-18T01:27Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -99,7 +99,7 @@
           var option = (typeof item === 'object') ? item.option : undefined;
           var dataValue = 'data-value="' + value + '"';
           var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
-          return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + item + '">' + content + '</a>';
+          return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + value + '">' + content + '</a>';
       }).join('') : options.items;
       $node.html(markup).attr({ 'aria-label': options.title });
   });
@@ -2243,8 +2243,8 @@
       WrappedRange.prototype.nativeRange = function () {
           if (env.isW3CRangeSupport) {
               var w3cRange = document.createRange();
-              w3cRange.setStart(this.sc, this.so);
-              w3cRange.setEnd(this.ec, this.eo);
+              w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
+              w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
               return w3cRange;
           }
           else {
@@ -2314,15 +2314,27 @@
       WrappedRange.prototype.normalize = function () {
           /**
            * @param {BoundaryPoint} point
-           * @param {Boolean} isLeftToRight
+           * @param {Boolean} isLeftToRight - true: prefer to choose right node
+           *                                - false: prefer to choose left node
            * @return {BoundaryPoint}
            */
           var getVisiblePoint = function (point, isLeftToRight) {
-              if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-                  (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
-                  return point;
+              // Just use the given point [XXX:Adhoc]
+              //  - case 01. if the point is on the middle of the node
+              //  - case 02. if the point is on the right edge and prefer to choose left node
+              //  - case 03. if the point is on the left edge and prefer to choose right node
+              //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
+              //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
+              //  - case 06. if the point is on the block node and there is no children
+              if (dom.isVisiblePoint(point)) {
+                  if (!dom.isEdgePoint(point) ||
+                      (dom.isRightEdgePoint(point) && !isLeftToRight) ||
+                      (dom.isLeftEdgePoint(point) && isLeftToRight) ||
+                      (dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
+                      (dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
+                      (dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+                      return point;
+                  }
               }
               // point on block's edge
               var block = dom.ancestor(point.node, dom.isBlock);
@@ -4724,15 +4736,20 @@
       };
       Editor.prototype.onFormatBlock = function (tagName, $target) {
           // [workaround] for MSIE, IE need `<`
-          tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
-          document.execCommand('FormatBlock', false, tagName);
+          document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
           // support custom class
           if ($target && $target.length) {
-              var className = $target[0].className || '';
-              if (className) {
-                  var currentRange = this.createRange();
-                  var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
-                  $parent.addClass(className);
+              // find the exact element has given tagName
+              if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
+                  $target = $target.find(tagName);
+              }
+              if ($target && $target.length) {
+                  var className = $target[0].className || '';
+                  if (className) {
+                      var currentRange = this.createRange();
+                      var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
+                      $parent.addClass(className);
+                  }
               }
           }
       };
@@ -5100,7 +5117,7 @@
                       for (var _i = 0, whitelist_2 = whitelist_1; _i < whitelist_2.length; _i++) {
                           var src = whitelist_2[_i];
                           // pass if src is trusted
-                          if ((new RegExp('src="(https?:)?\/\/' + src + '\/(.+)"')).test(tag)) {
+                          if ((new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"')).test(tag)) {
                               return tag;
                           }
                       }
@@ -5274,7 +5291,7 @@
           this.lang = this.options.langInfo;
           this.events = {
               'summernote.mousedown': function (we, e) {
-                  if (_this.update(e.target)) {
+                  if (_this.update(e.target, e)) {
                       e.preventDefault();
                   }
               },
@@ -5340,13 +5357,13 @@
       Handle.prototype.destroy = function () {
           this.$handle.remove();
       };
-      Handle.prototype.update = function (target) {
+      Handle.prototype.update = function (target, event) {
           if (this.context.isDisabled()) {
               return false;
           }
           var isImage = dom.isImg(target);
           var $selection = this.$handle.find('.note-control-selection');
-          this.context.invoke('imagePopover.update', target);
+          this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
               var $image = $$1(target);
               var position = $image.position();
@@ -6607,30 +6624,23 @@
                   .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
-                  // if no url was given and given text is valid URL then copy that into URL Field
+                  // If no url was given and given text is valid URL then copy that into URL Field
                   if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
                       linkInfo.url = linkInfo.text;
                   }
-                  $linkText.val(linkInfo.text);
-                  var handleLinkTextUpdate = function () {
-                      _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-                      // if linktext was modified by keyup,
-                      // stop cloning text from linkUrl
+                  $linkText.on('input paste propertychange', function () {
+                      // If linktext was modified by input events,
+                      // cloning text from linkUrl will be stopped.
                       linkInfo.text = $linkText.val();
-                  };
-                  $linkText.on('input', handleLinkTextUpdate).on('paste', function () {
-                      setTimeout(handleLinkTextUpdate, 0);
-                  });
-                  var handleLinkUrlUpdate = function () {
                       _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-                      // display same link on `Text to display` input
-                      // when create a new link
+                  }).val(linkInfo.text);
+                  $linkUrl.on('input paste propertychange', function () {
+                      // Display same text on `Text to display` as default
+                      // when linktext has no text
                       if (!linkInfo.text) {
                           $linkText.val($linkUrl.val());
                       }
-                  };
-                  $linkUrl.on('input', handleLinkUrlUpdate).on('paste', function () {
-                      setTimeout(handleLinkUrlUpdate, 0);
+                      _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
                   }).val(linkInfo.url);
                   if (!env.isSupportTouch) {
                       $linkUrl.trigger('focus');
@@ -6654,9 +6664,9 @@
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
                   // detach events
-                  $linkText.off('input paste keypress');
-                  $linkUrl.off('input paste keypress');
-                  $linkBtn.off('click');
+                  $linkText.off();
+                  $linkUrl.off();
+                  $linkBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -6834,23 +6844,22 @@
                   $imageInput.replaceWith($imageInput.clone().on('change', function (event) {
                       deferred.resolve(event.target.files || event.target.value);
                   }).val(''));
-                  $imageBtn.click(function (event) {
-                      event.preventDefault();
-                      deferred.resolve($imageUrl.val());
-                  });
-                  $imageUrl.on('keyup paste', function () {
-                      var url = $imageUrl.val();
-                      _this.ui.toggleBtn($imageBtn, url);
+                  $imageUrl.on('input paste propertychange', function () {
+                      _this.ui.toggleBtn($imageBtn, $imageUrl.val());
                   }).val('');
                   if (!env.isSupportTouch) {
                       $imageUrl.trigger('focus');
                   }
+                  $imageBtn.click(function (event) {
+                      event.preventDefault();
+                      deferred.resolve($imageUrl.val());
+                  });
                   _this.bindEnterKey($imageUrl, $imageBtn);
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
-                  $imageInput.off('change');
-                  $imageUrl.off('keyup paste keypress');
-                  $imageBtn.off('click');
+                  $imageInput.off();
+                  $imageUrl.off();
+                  $imageBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -6892,7 +6901,7 @@
       ImagePopover.prototype.destroy = function () {
           this.$popover.remove();
       };
-      ImagePopover.prototype.update = function (target) {
+      ImagePopover.prototype.update = function (target, event) {
           if (dom.isImg(target)) {
               var pos = dom.posFromPlaceholder(target);
               var posEditor = dom.posFromPlaceholder(this.editable);
@@ -7016,26 +7025,8 @@
           var ytMatch = url.match(ytRegExp);
           var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
           var igMatch = url.match(igRegExp);
-          var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
-          var vMatch = url.match(vRegExp);
           var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
           var vimMatch = url.match(vimRegExp);
-          var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-          var dmMatch = url.match(dmRegExp);
-          var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
-          var youkuMatch = url.match(youkuRegExp);
-          var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-          var qqMatch = url.match(qqRegExp);
-          var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-          var qqMatch2 = url.match(qqRegExp2);
-          var mp4RegExp = /^.+.(mp4|m4v)$/;
-          var mp4Match = url.match(mp4RegExp);
-          var oggRegExp = /^.+.(ogg|ogv)$/;
-          var oggMatch = url.match(oggRegExp);
-          var webmRegExp = /^.+.(webm)$/;
-          var webmMatch = url.match(webmRegExp);
-          var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
-          var fbMatch = url.match(fbRegExp);
           var $video;
           if (ytMatch && ytMatch[1].length === 11) {
               var youtubeId = ytMatch[1];
@@ -7052,63 +7043,22 @@
                   .attr('frameborder', 0)
                   .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
                   .attr('src', 'https://www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-                  .attr('width', '100%').attr('height', '360');
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
           else if (igMatch && igMatch[0].length) {
-            $video = $$1('<iframe allowfullscreen>')
-                .attr('frameborder', 0)
-                .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
-                .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
-                .attr('width', '100%').attr('height', '360');
+              $video = $$1('<iframe allowfullscreen>')
+                  .attr('frameborder', 0)
+                  .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
+                  .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
-        //   else if (vMatch && vMatch[0].length) {
-        //       $video = $$1('<iframe>')
-        //           .attr('frameborder', 0)
-        //           .attr('src', vMatch[0] + '/embed/simple')
-        //           .attr('width', '600').attr('height', '600')
-        //           .attr('class', 'vine-embed');
-        //   }
           else if (vimMatch && vimMatch[3].length) {
-            $video = $$1('<iframe allowfullscreen>')
-                .attr('frameborder', 0)
-                .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
-                .attr('src', 'https://player.vimeo.com/video/' + vimMatch[3])
-                .attr('width', '100%').attr('height', '360');
+              $video = $$1('<iframe allowfullscreen>')
+                  .attr('frameborder', 0)
+                  .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
+                  .attr('src', 'https://player.vimeo.com/video/' + vimMatch[3])
+                  .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
           }
-        //   else if (dmMatch && dmMatch[2].length) {
-        //       $video = $$1('<iframe>')
-        //           .attr('frameborder', 0)
-        //           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-        //           .attr('width', '640').attr('height', '360');
-        //   }
-        //   else if (youkuMatch && youkuMatch[1].length) {
-        //       $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-        //           .attr('frameborder', 0)
-        //           .attr('height', '498')
-        //           .attr('width', '510')
-        //           .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-        //   }
-        //   else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
-        //       var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
-        //       $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-        //           .attr('frameborder', 0)
-        //           .attr('height', '310')
-        //           .attr('width', '500')
-        //           .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
-        //   }
-        //   else if (mp4Match || oggMatch || webmMatch) {
-        //       $video = $$1('<video controls>')
-        //           .attr('src', url)
-        //           .attr('width', '640').attr('height', '360');
-        //   }
-        //   else if (fbMatch && fbMatch[0].length) {
-        //       $video = $$1('<iframe>')
-        //           .attr('frameborder', 0)
-        //           .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
-        //           .attr('width', '560').attr('height', '301')
-        //           .attr('scrolling', 'no')
-        //           .attr('allowtransparency', 'true');
-        //   }
           else {
               // this is not a known video link. Now what, Cat? Now what?
               return false;
@@ -7129,6 +7079,7 @@
               if ($node) {
                   // insert video node
                   _this.context.invoke('editor.insertNode', $node);
+                  _this.context.invoke('editor.insertNode', $$1('<p><br></p>')[0]);
               }
           }).fail(function () {
               _this.context.invoke('editor.restoreRange');
@@ -7147,7 +7098,7 @@
               var $videoBtn = _this.$dialog.find('.note-video-btn');
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
-                  $videoUrl.val(text).on('input', function () {
+                  $videoUrl.on('input paste propertychange', function () {
                       _this.ui.toggleBtn($videoBtn, $videoUrl.val());
                   });
                   if (!env.isSupportTouch) {
@@ -7160,8 +7111,8 @@
                   _this.bindEnterKey($videoUrl, $videoBtn);
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
-                  $videoUrl.off('input');
-                  $videoBtn.off('click');
+                  $videoUrl.off();
+                  $videoBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -7543,7 +7494,7 @@
           },
           buttons: {},
           lang: 'en-US',
-          followingToolbar: true,
+          followingToolbar: false,
           otherStaticBar: '',
           // toolbar
           toolbar: [
@@ -7668,7 +7619,8 @@
           codeviewIframeFilter: true,
           codeviewIframeWhitelistSrc: [],
           codeviewIframeWhitelistSrcBase: [
-              'www.youtube(?:-nocookie)?.com',
+              'www.youtube.com',
+              'www.youtube-nocookie.com',
               'www.facebook.com',
               'vine.co',
               'instagram.com',
