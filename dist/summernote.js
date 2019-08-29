@@ -1,11 +1,11 @@
 /**
- * Super simple wysiwyg editor v0.8.11
+ * Super simple wysiwyg editor v0.8.12
  * https://summernote.org
  *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-07-18T01:27Z
+ * Date: 2019-08-29T08:21Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -61,7 +61,7 @@
       create: function (markup, callback) {
           return function () {
               var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-              var children = $$1.isArray(arguments[0]) ? arguments[0] : [];
+              var children = Array.isArray(arguments[0]) ? arguments[0] : [];
               if (options && options.children) {
                   children = options.children;
               }
@@ -92,7 +92,7 @@
   ].join(''));
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
   var dropdown = renderer.create('<ul class="dropdown-menu" role="list">', function ($node, options) {
-      var markup = $$1.isArray(options.items) ? options.items.map(function (item) {
+      var markup = Array.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
           var option = (typeof item === 'object') ? item.option : undefined;
@@ -106,7 +106,7 @@
       return contents + ' ' + icon(options.icons.caret, 'span');
   };
   var dropdownCheck = renderer.create('<ul class="dropdown-menu note-check" role="list">', function ($node, options) {
-      var markup = $$1.isArray(options.items) ? options.items.map(function (item) {
+      var markup = Array.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
           return '<li role="listitem" aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
@@ -470,38 +470,6 @@
   }
   var isEdge = /Edge\/\d+/.test(userAgent);
   var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd) {
-      // Webpack
-      if (typeof __webpack_require__ === 'function') { // eslint-disable-line
-          try {
-              // If CodeMirror can't be resolved, `require.resolve` will throw an
-              // exception and `hasCodeMirror` won't be set to `true`.
-              require.resolve('codemirror');
-              hasCodeMirror = true;
-          }
-          catch (e) {
-              // do nothing
-          }
-      }
-      else if (typeof require !== 'undefined') {
-          // Browserify
-          if (typeof require.resolve !== 'undefined') {
-              try {
-                  // If CodeMirror can't be resolved, `require.resolve` will throw an
-                  // exception and `hasCodeMirror` won't be set to `true`.
-                  require.resolve('codemirror');
-                  hasCodeMirror = true;
-              }
-              catch (e) {
-                  // do nothing
-              }
-              // Almond/Require
-          }
-          else if (typeof require.specified !== 'undefined') {
-              hasCodeMirror = require.specified('codemirror');
-          }
-      }
-  }
   var isSupportTouch = (('ontouchstart' in window) ||
       (navigator.MaxTouchPoints > 0) ||
       (navigator.msMaxTouchPoints > 0));
@@ -748,16 +716,13 @@
       return true;
   }
   /**
-   * returns index of item
-   */
-  function indexOf(array, item) {
-      return $$1.inArray(item, array);
-  }
-  /**
    * returns true if the value is present in the list.
    */
   function contains(array, item) {
-      return indexOf(array, item) !== -1;
+      if (array && array.length && item) {
+          return array.indexOf(item) !== -1;
+      }
+      return false;
   }
   /**
    * get sum from a list
@@ -847,22 +812,22 @@
    * @param {Array} array
    */
   function next(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
+      if (array && array.length && item) {
+          var idx = array.indexOf(item);
+          return idx === -1 ? null : array[idx + 1];
       }
-      return array[idx + 1];
+      return null;
   }
   /**
    * returns prev item.
    * @param {Array} array
    */
   function prev(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
+      if (array && array.length && item) {
+          var idx = array.indexOf(item);
+          return idx === -1 ? null : array[idx - 1];
       }
-      return array[idx - 1];
+      return null;
   }
   /**
    * @class core.list
@@ -1156,9 +1121,8 @@
   function commonAncestor(nodeA, nodeB) {
       var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-          if ($$1.inArray(n, ancestors) > -1) {
+          if (ancestors.indexOf(n) > -1)
               return n;
-          }
       }
       return null; // difference document area
   }
@@ -1762,7 +1726,7 @@
               var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
               return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
           });
-          markup = $$1.trim(markup);
+          markup = markup.trim();
       }
       return markup;
   }
@@ -3176,7 +3140,7 @@
           }
           else {
               var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-              var isUnordered = $$1.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+              var isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
               styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
           }
           var para = dom.ancestor(rng.sc, dom.isPara);
@@ -5052,14 +5016,7 @@
 
   var CodeMirror;
   if (env.hasCodeMirror) {
-      if (env.isSupportAmd) {
-          require(['codemirror'], function (cm) {
-              CodeMirror = cm;
-          });
-      }
-      else {
-          CodeMirror = window.CodeMirror;
-      }
+      CodeMirror = window.CodeMirror;
   }
   /**
    * @class Codeview
@@ -5638,7 +5595,7 @@
       Buttons.prototype.isFontDeservedToAdd = function (name) {
           var genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
           name = name.toLowerCase();
-          return ((name !== '') && this.isFontInstalled(name) && ($$1.inArray(name, genericFamilies) === -1));
+          return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
       };
       Buttons.prototype.colorPalette = function (className, tooltip, backColor, foreColor) {
           var _this = this;
@@ -5903,7 +5860,7 @@
               $$1.each(styleInfo['font-family'].split(','), function (idx, fontname) {
                   fontname = fontname.trim().replace(/['"]+/g, '');
                   if (_this.isFontDeservedToAdd(fontname)) {
-                      if ($$1.inArray(fontname, _this.options.fontNames) === -1) {
+                      if (_this.options.fontNames.indexOf(fontname) === -1) {
                           _this.options.fontNames.push(fontname);
                       }
                   }
@@ -6301,8 +6258,8 @@
       Buttons.prototype.build = function ($container, groups) {
           for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
               var group = groups[groupIdx];
-              var groupName = $$1.isArray(group) ? group[0] : group;
-              var buttons = $$1.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+              var groupName = Array.isArray(group) ? group[0] : group;
+              var buttons = Array.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
               var $group = this.ui.buttonGroup({
                   className: 'note-' + groupName
               }).render();
@@ -6772,7 +6729,7 @@
               '<div class="form-group note-form-group note-group-select-from-files">',
               '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
               '<input class="note-image-input form-control-file note-form-control note-input" ',
-              ' type="file" name="files" accept="image/*" multiple="multiple" />',
+              ' type="file" name="files" accept="image/*" />',
               imageLimitation,
               '</div>',
               '<div class="form-group note-group-image-url" style="overflow:auto;">',
@@ -7135,7 +7092,7 @@
           var $container = this.options.dialogsInBody ? this.$body : this.$editor;
           var body = [
               '<p class="text-center">',
-              '<a href="http://summernote.org/" target="_blank">Summernote 0.8.11</a> · ',
+              '<a href="http://summernote.org/" target="_blank">Summernote 0.8.12</a> · ',
               '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
               '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
               '</p>',
@@ -7268,7 +7225,7 @@
           this.options = context.options;
           this.hint = this.options.hint || [];
           this.direction = this.options.hintDirection || 'bottom';
-          this.hints = $$1.isArray(this.hint) ? this.hint : [this.hint];
+          this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
           this.events = {
               'summernote.keyup': function (we, e) {
                   if (!e.isDefaultPrevented()) {
@@ -7459,7 +7416,7 @@
   }());
 
   $$1.summernote = $$1.extend($$1.summernote, {
-      version: '0.8.11',
+      version: '0.8.12',
       plugins: {},
       dom: dom,
       range: range,
