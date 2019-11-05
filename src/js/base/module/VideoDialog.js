@@ -75,7 +75,7 @@ export default class VideoDialog {
         .attr('frameborder', 0)
         .attr('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture')
         .attr('src', 'https://www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-        .attr('style', 'padding:20px').attr('width', '100%').attr('height', '360');
+        .attr('style', 'margin-top:2rem;margin-bottom:2rem;background-color:#000').attr('width', '100%').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe allowfullscreen>')
         .attr('frameborder', 0)
