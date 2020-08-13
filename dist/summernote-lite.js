@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2020-08-13T05:15Z
+ * Date: 2020-08-13T06:21Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -532,7 +532,7 @@
                       opt.lang.color.transparent,
                       '    </button>',
                       '  </div>',
-                      '  <div class="note-holder" data-event="backColor"/>',
+                      '  <div class="note-holder" data-event="backColor"></div>',
                       '  <div class="btn-sm">',
                       '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
                       '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
@@ -548,7 +548,7 @@
                       opt.lang.color.resetToDefault,
                       '    </button>',
                       '  </div>',
-                      '  <div class="note-holder" data-event="foreColor"/>',
+                      '  <div class="note-holder" data-event="foreColor"></div>',
                       '  <div class="btn-sm">',
                       '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
                       '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
@@ -6206,14 +6206,14 @@
                           this.lang.color.transparent,
                           '    </button>',
                           '  </div>',
-                          '  <div class="note-holder" data-event="backColor"/>',
+                          '  <div class="note-holder" data-event="backColor"></div>',
                           '  <div>',
                           '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
                           this.lang.color.cpSelect,
                           '    </button>',
                           '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
                           '  </div>',
-                          '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
+                          '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"></div>',
                           '</div>',
                       ].join('') : '') +
                           (foreColor ? [
@@ -6224,13 +6224,13 @@
                               this.lang.color.resetToDefault,
                               '    </button>',
                               '  </div>',
-                              '  <div class="note-holder" data-event="foreColor"/>',
+                              '  <div class="note-holder" data-event="foreColor"></div>',
                               '  <div>',
                               '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
                               this.lang.color.cpSelect,
                               '    </button>',
                               '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
-                              '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
+                              '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"></div>',
                               '</div>',
                           ].join('') : ''),
                       callback: function ($dropdown) {
