@@ -20,6 +20,7 @@ export default class VideoDialog {
       '<div class="form-group note-form-group row-fluid">',
       `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
       '<input class="note-video-url form-control note-form-control note-input" type="text" />',
+      `<a class="note-video-link" target="_blank" href="/club/dashboard/movies">${this.lang.video.upload}</a>`,
       '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';

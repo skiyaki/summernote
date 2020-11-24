@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2020-08-13T06:21Z
+ * Date: 2020-11-19T09:03Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -6952,6 +6952,7 @@
               '<div class="form-group note-form-group row-fluid">',
               "<label class=\"note-form-label\">" + this.lang.video.url + " <small class=\"text-muted\">" + this.lang.video.providers + "</small></label>",
               '<input class="note-video-url form-control note-form-control note-input" type="text" />',
+              "<a class=\"note-video-link\" target=\"_blank\" href=\"/club/dashboard/movies\">" + this.lang.video.upload + "</a>",
               '</div>',
           ].join('');
           var buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';

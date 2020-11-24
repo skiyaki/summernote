@@ -41,6 +41,7 @@
         insert: '動画挿入',
         url: '動画のURL',
         providers: '(YouTube, Vimeo, Instagram)',
+        upload: '動画アップロード',
       },
       link: {
         link: 'リンク',
