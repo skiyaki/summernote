@@ -157,7 +157,7 @@ $.summernote = $.extend($.summernote, {
     fontNamesIgnoreCheck: [],
     addDefaultFonts: true,
 
-    fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+    fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36'],
 
     fontSizeUnits: ['px', 'pt'],
 

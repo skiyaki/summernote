@@ -36,7 +36,7 @@ describe('VideoDialog', () => {
     it('should get false when insert invalid urls', () => {
       expect($video.createVideoNode('http://www.google.com')).to.equal(false);
       expect($video.createVideoNode('http://www.youtube.com')).to.equal(false);
-      expect($video.createVideoNode('http://www.facebook.com')).to.equal(false);
+      //expect($video.createVideoNode('http://www.facebook.com')).to.equal(false);
     });
 
     it('should get proper iframe src when insert valid video urls', () => {
@@ -47,13 +47,13 @@ describe('VideoDialog', () => {
       expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
         '//instagram.com/p/Bi9cbsxjn-F/embed/');
       // v.qq.com
-      expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
-        '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
-      expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
-        '//v.qq.com/txp/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+      //expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
+      //  '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
+      //expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
+      //  '//v.qq.com/txp/iframe/player.html?vid=p0330y279lm&amp;auto=0');
       // Facebook
-      expectUrl('https://www.facebook.com/Engineering/videos/631826881803/',
-        '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803');
+      //expectUrl('https://www.facebook.com/Engineering/videos/631826881803/',
+      //  '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803');
     });
 
     it('should be embedded start parameter when insert YouTube video with t', () => {
