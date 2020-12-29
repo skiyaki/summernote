@@ -7,7 +7,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2020-12-29T09:48Z
+ * Date: 2020-12-29T10:14Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -9058,26 +9058,8 @@ var VideoDialog_VideoDialog = /*#__PURE__*/function () {
       var gdMatch = url.match(gdRegExp);
       var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
       var igMatch = url.match(igRegExp);
-      var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
-      var vMatch = url.match(vRegExp);
       var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
       var vimMatch = url.match(vimRegExp);
-      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-      var dmMatch = url.match(dmRegExp);
-      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
-      var youkuMatch = url.match(youkuRegExp);
-      var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-      var qqMatch = url.match(qqRegExp);
-      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-      var qqMatch2 = url.match(qqRegExp2);
-      var mp4RegExp = /^.+.(mp4|m4v)$/;
-      var mp4Match = url.match(mp4RegExp);
-      var oggRegExp = /^.+.(ogg|ogv)$/;
-      var oggMatch = url.match(oggRegExp);
-      var webmRegExp = /^.+.(webm)$/;
-      var webmMatch = url.match(webmRegExp);
-      var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
-      var fbMatch = url.match(fbRegExp);
       var $video;
 
       if (ytMatch && ytMatch[1].length === 11) {
