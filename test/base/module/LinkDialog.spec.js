@@ -85,26 +85,26 @@ describe('LinkDialog', () => {
       expect(checked).to.be.false;
     });
 
-    it('should check default protocol if link not exists', () => {
-      range.createFromNode($editable.find('p')[3]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    // it('should check default protocol if link not exists', () => {
+    //   range.createFromNode($editable.find('p')[3]).normalize().select();
+    //   context.invoke('editor.setLastRange');
+    //   dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-use-protocol input[type=checkbox]')
-        .is(':checked');
-      expect(checked).to.be.true;
-    });
+    //   var checked = dialog.$dialog
+    //     .find('.sn-checkbox-use-protocol input[type=checkbox]')
+    //     .is(':checked');
+    //   expect(checked).to.be.true;
+    // });
 
-    it('should check default protocol if link not exists although it has protocol', () => {
-      range.createFromNode($editable.find('p')[4]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    // it('should check default protocol if link not exists although it has protocol', () => {
+    //   range.createFromNode($editable.find('p')[4]).normalize().select();
+    //   context.invoke('editor.setLastRange');
+    //   dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-use-protocol input[type=checkbox]')
-        .is(':checked');
-      expect(checked).to.be.true;
-    });
+    //   var checked = dialog.$dialog
+    //     .find('.sn-checkbox-use-protocol input[type=checkbox]')
+    //     .is(':checked');
+    //   expect(checked).to.be.true;
+    // });
   });
 });
