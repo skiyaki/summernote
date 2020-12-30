@@ -7,7 +7,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2020-12-29T12:32Z
+ * Date: 2020-12-30T09:09Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -8378,11 +8378,7 @@ var LinkDialog_LinkDialog = /*#__PURE__*/function () {
         className: 'sn-checkbox-open-in-new-window',
         text: this.lang.link.openInNewWindow,
         checked: true
-      }).render()).html() : '', external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
-        className: 'sn-checkbox-use-protocol',
-        text: this.lang.link.useProtocol,
-        checked: true
-      }).render()).html()].join('');
+      }).render()).html() : ''].join('');
       var buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
       var footer = "<input type=\"button\" href=\"#\" class=\"".concat(buttonClass, "\" value=\"").concat(this.lang.link.insert, "\" disabled>");
       this.$dialog = this.ui.dialog({
@@ -10056,8 +10052,8 @@ var dropdown = renderer["a" /* default */].create('<div class="note-dropdown-men
   }
 });
 
-var dropdownButtonContents = function dropdownButtonContents(contents) {
-  return contents;
+var dropdownButtonContents = function dropdownButtonContents(contents, options) {
+  return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
 var dropdownCheck = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {

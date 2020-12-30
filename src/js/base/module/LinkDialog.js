@@ -34,11 +34,6 @@ export default class LinkDialog {
           checked: true,
         }).render()).html()
         : '',
-      $('<div/>').append(this.ui.checkbox({
-        className: 'sn-checkbox-use-protocol',
-        text: this.lang.link.useProtocol,
-        checked: true,
-      }).render()).html(),
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';

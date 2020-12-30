@@ -11,3 +11,14 @@
   padding: 0.28rem 0.65rem;
   font-size: 13px;
 }
+
+.note-dropdown-menu {
+  min-width: 90px;
+}
+
+.dropdown-toggle {
+  text-overflow: initial;
+  &::after {
+    content: none;
+  }
+}
