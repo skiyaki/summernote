@@ -12,12 +12,11 @@
   font-size: 13px;
 }
 
-.note-dropdown-menu {
-  min-width: 90px;
+.dropdown-fontsize {
+  min-width: 90px !important;
 }
 
 .dropdown-toggle {
-  text-overflow: initial;
   &::after {
     content: none;
   }
